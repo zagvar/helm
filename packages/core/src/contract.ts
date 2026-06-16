@@ -1,4 +1,7 @@
 import * as z from 'zod';
+import {
+  RiskProfileEvaluationInputSchema,
+} from '@vibedcoder/invespro-types';
 import type {
   AnswerValue,
   EvaluationResult,
@@ -16,25 +19,19 @@ const ModernJdmResultSchema = z.object({
   override_id: z.string().optional(),
 }).passthrough();
 
-const LegacyJdmResultSchema = z.object({
-  risk_profile: z.string(),
-  total_score: z.number().nonnegative().optional(),
-  override_applied: z.boolean().optional(),
-}).passthrough();
-
 interface ParsedInput {
   readonly applicantId?: string;
   readonly answers: RiskProfileAnswers;
 }
 
 /**
- * Validates either the definition-driven input envelope or the legacy flat input.
+ * Validates the definition-driven input envelope.
  */
 export function parseEvaluationInput(
   definition: RiskProfileDefinition,
   input: RiskProfileEvaluationInput | Record<string, unknown>,
 ): ParsedInput {
-  const candidate = normalizeInputEnvelope(input);
+  const candidate = RiskProfileEvaluationInputSchema.parse(input);
   const answers = createAnswersSchema(definition).parse(
     candidate.answers,
   ) as RiskProfileAnswers;
@@ -64,24 +61,14 @@ export function fromJdmResult(
   graphChecksum: string,
   applicantId?: string,
 ): EvaluationResult {
-  const modern = ModernJdmResultSchema.safeParse(raw);
-  const parsed = modern.success
-    ? {
-        profileId: modern.data.profile_id,
-        rawScore: modern.data.raw_score,
-        normalizedScore: modern.data.normalized_score,
-        overrideApplied: modern.data.override_applied ?? false,
-        overrideId: modern.data.override_id,
-        context: modern.data,
-      }
-    : parseLegacyResult(raw, definition);
+  const parsed = ModernJdmResultSchema.parse(raw);
 
   const profile = definition.profiles.find(
-    (candidate) => candidate.id === parsed.profileId,
+    (candidate) => candidate.id === parsed.profile_id,
   );
   if (profile === undefined) {
     throw new Error(
-      `[invespro-core] JDM returned undeclared profile id "${parsed.profileId}".`,
+      `[invespro-core] JDM returned undeclared profile id "${parsed.profile_id}".`,
     );
   }
 
@@ -94,16 +81,16 @@ export function fromJdmResult(
 
   const scores = Object.fromEntries(
     definition.scoring.flatMap((factor) => {
-      const value = parsed.context[scoreField(factor.questionId)];
+      const value = parsed[scoreField(factor.questionId)];
       return typeof value === 'number' ? [[factor.questionId, value]] : [];
     }),
   );
-  const normalizedScore = roundScore(parsed.normalizedScore);
+  const normalizedScore = roundScore(parsed.normalized_score);
 
   return {
     ...(applicantId !== undefined && { applicantId }),
     ...(Object.keys(scores).length === definition.scoring.length && { scores }),
-    rawScore: parsed.rawScore,
+    rawScore: parsed.raw_score,
     normalizedScore,
     profile: {
       id: profile.id,
@@ -112,8 +99,8 @@ export function fromJdmResult(
         description: profile.description,
       }),
     },
-    overrideApplied: parsed.overrideApplied,
-    ...(parsed.overrideId !== undefined && { overrideId: parsed.overrideId }),
+    overrideApplied: parsed.override_applied ?? false,
+    ...(parsed.override_id !== undefined && { overrideId: parsed.override_id }),
     allocation,
     evaluatedAt: new Date().toISOString(),
     definition: {
@@ -122,10 +109,6 @@ export function fromJdmResult(
       schemaVersion: definition.schemaVersion,
       graphChecksum,
     },
-    // Preserve the original result fields while consumers migrate.
-    totalScore: parsed.rawScore,
-    riskProfile: profile.label,
-    jdmVersion: definition.version,
   };
 }
 
@@ -154,77 +137,6 @@ function createAnswersSchema(
     shape[question.id] = question.required ? schema : schema.optional();
   }
   return z.object(shape).strict();
-}
-
-function normalizeInputEnvelope(
-  input: RiskProfileEvaluationInput | Record<string, unknown>,
-): { applicantId?: string; answers: Record<string, unknown> } {
-  if (
-    'answers' in input &&
-    typeof input.answers === 'object' &&
-    input.answers !== null &&
-    !Array.isArray(input.answers)
-  ) {
-    const applicantId =
-      typeof input.applicantId === 'string' ? input.applicantId : undefined;
-    return {
-      ...(applicantId !== undefined && { applicantId }),
-      answers: input.answers as Record<string, unknown>,
-    };
-  }
-
-  const { applicantId, ...answers } = input;
-  return {
-    ...(typeof applicantId === 'string' && { applicantId }),
-    answers,
-  };
-}
-
-function parseLegacyResult(
-  raw: unknown,
-  definition: RiskProfileDefinition,
-): {
-  profileId: string;
-  rawScore: number;
-  normalizedScore: number;
-  overrideApplied: boolean;
-  overrideId?: string;
-  context: Record<string, unknown>;
-} {
-  const legacy = LegacyJdmResultSchema.safeParse(raw);
-  if (!legacy.success) {
-    throw new Error(
-      `[invespro-core] JDM output does not satisfy the Invespro graph contract.\n${legacy.error.message}`,
-    );
-  }
-  const profile = definition.profiles.find(
-    (candidate) => candidate.label === legacy.data.risk_profile,
-  );
-  if (profile === undefined) {
-    throw new Error(
-      `[invespro-core] Legacy JDM returned unknown profile "${legacy.data.risk_profile}".`,
-    );
-  }
-  if (legacy.data.total_score === undefined) {
-    if (!(legacy.data.override_applied ?? false)) {
-      throw new Error(
-        '[invespro-core] A non-override legacy result requires "total_score".',
-      );
-    }
-  }
-
-  const rawScore = legacy.data.total_score ?? 0;
-  const maximumRawScore = definition.scoring.reduce(
-    (sum, factor) => sum + Math.max(...factor.rules.map((rule) => rule.score)),
-    0,
-  );
-  return {
-    profileId: profile.id,
-    rawScore,
-    normalizedScore: maximumRawScore === 0 ? 0 : (rawScore / maximumRawScore) * 100,
-    overrideApplied: legacy.data.override_applied ?? false,
-    context: legacy.data,
-  };
 }
 
 function roundScore(score: number): number {

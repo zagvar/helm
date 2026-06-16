@@ -82,13 +82,15 @@ export default defineCommand({
         await engine.evaluate(sample);
       } else if (definition === undefined) {
         await engine.evaluate({
-          investmentHorizonYears: 10,
-          riskAttitude: 'hold',
-          investmentObjective: 'balanced_growth',
-          annualIncome: 75_000,
-          dtiRatio: 20,
-          liquidityMonths: 4,
-          investmentExperience: 'intermediate',
+          answers: {
+            investmentHorizonYears: 10,
+            riskAttitude: 'hold',
+            investmentObjective: 'balanced_growth',
+            annualIncome: 75_000,
+            dtiRatio: 20,
+            liquidityMonths: 4,
+            investmentExperience: 'intermediate',
+          },
         });
       } else {
         log.warn(

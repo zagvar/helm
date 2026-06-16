@@ -39,22 +39,18 @@ export type DefinitionReference = z.infer<typeof DefinitionReferenceSchema>;
  * Public result returned by core and every adapter.
  *
  * Definition metadata and graph checksum identify the exact rules used for the
- * decision. Legacy fields remain during the migration to normalized scoring.
+ * decision.
  */
 export const EvaluationResultSchema = z.object({
   applicantId: z.string().optional(),
   scores: ScoreBreakdownSchema.optional(),
-  rawScore: z.number().nonnegative().optional(),
-  normalizedScore: z.number().min(0).max(100).optional(),
+  rawScore: z.number().nonnegative(),
+  normalizedScore: z.number().min(0).max(100),
   profile: EvaluatedProfileSchema,
   overrideApplied: z.boolean(),
   overrideId: z.string().optional(),
   allocation: z.record(z.string(), z.number().min(0).max(100)),
   evaluatedAt: z.iso.datetime(),
   definition: DefinitionReferenceSchema,
-  // Compatibility fields for the original default model.
-  totalScore: z.number().nonnegative().optional(),
-  riskProfile: z.string(),
-  jdmVersion: z.string(),
 });
 export type EvaluationResult = z.infer<typeof EvaluationResultSchema>;

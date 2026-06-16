@@ -38,24 +38,26 @@ describe('createRiskProfilerApp', () => {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        investmentHorizonYears: 10,
-        riskAttitude: 'hold',
-        investmentObjective: 'balanced_growth',
-        annualIncome: 55_000,
-        dtiRatio: 20,
-        liquidityMonths: 2,
-        investmentExperience: 'beginner',
+        answers: {
+          investmentHorizonYears: 10,
+          riskAttitude: 'hold',
+          investmentObjective: 'balanced_growth',
+          annualIncome: 55_000,
+          dtiRatio: 20,
+          liquidityMonths: 2,
+          investmentExperience: 'beginner',
+        },
       }),
     });
     const result = await response.json();
 
     expect(response.status).toBe(200);
     expect(result).toMatchObject({
-      totalScore: 34,
-      riskProfile: 'Moderate',
+      rawScore: 34,
       normalizedScore: 60.71,
       profile: {
         id: 'moderate',
+        label: 'Moderate',
       },
       overrideApplied: false,
     });
@@ -66,22 +68,24 @@ describe('createRiskProfilerApp', () => {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        investmentHorizonYears: 20,
-        riskAttitude: 'buy_more',
-        investmentObjective: 'maximum_growth',
-        annualIncome: 180_000,
-        dtiRatio: 50,
-        liquidityMonths: 8,
-        investmentExperience: 'experienced',
+        answers: {
+          investmentHorizonYears: 20,
+          riskAttitude: 'buy_more',
+          investmentObjective: 'maximum_growth',
+          annualIncome: 180_000,
+          dtiRatio: 50,
+          liquidityMonths: 8,
+          investmentExperience: 'experienced',
+        },
       }),
     });
     const result = await response.json();
 
     expect(response.status).toBe(200);
     expect(result).toMatchObject({
-      riskProfile: 'Conservative',
       profile: {
         id: 'conservative',
+        label: 'Conservative',
       },
       overrideApplied: true,
     });
@@ -91,7 +95,11 @@ describe('createRiskProfilerApp', () => {
     const response = await app.request('/evaluate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ dtiRatio: 150 }),
+      body: JSON.stringify({
+        answers: {
+          dtiRatio: 150,
+        },
+      }),
     });
     const result = await response.json();
 
@@ -111,17 +119,21 @@ describe('createRiskProfilerApp', () => {
         items: [
           {
             applicantId: 'APP-001',
-            investmentHorizonYears: 10,
-            riskAttitude: 'hold',
-            investmentObjective: 'balanced_growth',
-            annualIncome: 55_000,
-            dtiRatio: 20,
-            liquidityMonths: 2,
-            investmentExperience: 'beginner',
+            answers: {
+              investmentHorizonYears: 10,
+              riskAttitude: 'hold',
+              investmentObjective: 'balanced_growth',
+              annualIncome: 55_000,
+              dtiRatio: 20,
+              liquidityMonths: 2,
+              investmentExperience: 'beginner',
+            },
           },
           {
             applicantId: 'APP-002',
-            dtiRatio: 150,
+            answers: {
+              dtiRatio: 150,
+            },
           },
         ],
       }),
@@ -141,7 +153,9 @@ describe('createRiskProfilerApp', () => {
           applicantId: 'APP-001',
           status: 'fulfilled',
           result: {
-            riskProfile: 'Moderate',
+            profile: {
+              label: 'Moderate',
+            },
           },
         },
         {
@@ -167,10 +181,14 @@ describe('createRiskProfilerApp', () => {
       body: JSON.stringify({
         items: [
           {
-            dtiRatio: 20,
+            answers: {
+              dtiRatio: 20,
+            },
           },
           {
-            dtiRatio: 30,
+            answers: {
+              dtiRatio: 30,
+            },
           },
         ],
       }),
@@ -192,13 +210,15 @@ describe('createRiskProfilerApp', () => {
 
     await expect(
       service.engine.evaluate({
-        investmentHorizonYears: 10,
-        riskAttitude: 'hold',
-        investmentObjective: 'balanced_growth',
-        annualIncome: 55_000,
-        dtiRatio: 20,
-        liquidityMonths: 2,
-        investmentExperience: 'beginner',
+        answers: {
+          investmentHorizonYears: 10,
+          riskAttitude: 'hold',
+          investmentObjective: 'balanced_growth',
+          annualIncome: 55_000,
+          dtiRatio: 20,
+          liquidityMonths: 2,
+          investmentExperience: 'beginner',
+        },
       }),
     ).rejects.toThrow('disposed');
   });

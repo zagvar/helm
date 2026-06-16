@@ -174,8 +174,7 @@ try {
 }
 ```
 
-The engine also accepts the original flat default input shape for compatibility,
-but the recommended shape is:
+The single-applicant input envelope is always:
 
 ```json
 {
@@ -191,6 +190,9 @@ but the recommended shape is:
   }
 }
 ```
+
+For custom definitions, the keys inside `answers` come from the active
+definition's question IDs.
 
 ### Example Result
 
@@ -215,15 +217,9 @@ but the recommended shape is:
     "version": "0.1.0",
     "schemaVersion": "1.0",
     "graphChecksum": "sha256:..."
-  },
-  "riskProfile": "Moderately Aggressive",
-  "jdmVersion": "0.1.0"
+  }
 }
 ```
-
-`riskProfile`, `totalScore`, and `jdmVersion` remain for compatibility with the
-earlier default model. New integrations should prefer `profile`, `rawScore`,
-`normalizedScore`, and `definition`.
 
 ## Batch Evaluation
 

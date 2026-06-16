@@ -1,7 +1,6 @@
 import { ZenEngine } from '@gorules/zen-engine';
 import * as z from 'zod';
 import type {
-  ApplicantInput,
   BatchEvaluationResult,
   EvaluationResult,
   RiskProfileDefinition,
@@ -41,7 +40,7 @@ export interface EvaluateManyOptions {
   readonly continueOnError?: boolean;
 }
 
-type EvaluationInput = RiskProfileEvaluationInput | ApplicantInput | Record<string, unknown>;
+type EvaluationInput = RiskProfileEvaluationInput | Record<string, unknown>;
 
 /**
  * Evaluates versioned investment-risk definitions through ZenEngine.
