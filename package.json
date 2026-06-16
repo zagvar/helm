@@ -21,7 +21,7 @@
     "build": "pnpm -r build",
     "dev": "pnpm -r dev",
     "demo:dev": "pnpm --filter @invespro/demo dev",
-    "demo:build": "pnpm --filter @invespro/demo build",
+    "demo:build": "pnpm --filter @invespro/demo... build",
     "test": "pnpm -r test",
     "typecheck": "tsc -b --emitDeclarationOnly",
     "lint": "pnpm -r lint",

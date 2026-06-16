@@ -43,6 +43,7 @@ describe("DemoTabs", () => {
     expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual([
       "Single Applicant",
       "Batch Evaluation",
+      "Custom Model",
       "Active Definition",
       "Definition Validator",
     ]);
@@ -59,6 +60,11 @@ describe("DemoTabs", () => {
     );
     expect(
       screen.getByRole("heading", { name: "Batch Evaluation" }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("tab", { name: "Custom Model" }));
+    expect(
+      screen.getByRole("heading", { name: "Custom Model" }),
     ).toBeInTheDocument();
 
     await userEvent.click(

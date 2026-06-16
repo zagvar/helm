@@ -15,9 +15,9 @@ export default function Home() {
             Investment Profiling and Portfolio Allocation
           </h1>
           <p className="mt-4 text-base leading-7 text-slate-600">
-            Evaluate applicant risk profiles, review suitable portfolio
-            allocations, and validate custom profiling definitions with the
-            default Invespro model.
+            Invespro is a rules-based investment profiling and portfolio
+            allocation engine with a default model, versioned customization, and
+            ready-to-use CLI/REST integrations.
           </p>
         </header>
 

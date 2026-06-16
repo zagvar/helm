@@ -14,6 +14,8 @@ It is designed for systems that need reusable investment profiling and
 allocation decisions: embed it directly in a Node service, expose it through the
 Hono REST adapter, or run it from the CLI for operations and data workflows.
 
+Try the live demo at [invespro.vercel.app](https://invespro.vercel.app/).
+
 > This project provides software primitives for investment profiling and
 > allocation. It is not financial advice, and production users remain
 > responsible for regulatory, suitability, audit, and disclosure requirements in
@@ -23,6 +25,7 @@ Hono REST adapter, or run it from the CLI for operations and data workflows.
 
 - [Features](#features)
 - [Packages](#packages)
+- [Demo App](#demo-app)
 - [Installation](#installation)
 - [Default Model](#default-model)
 - [Core Usage](#core-usage)
@@ -50,6 +53,7 @@ Hono REST adapter, or run it from the CLI for operations and data workflows.
 - CLI for interactive profiling, JSON evaluation, CSV batch input, and JDM validation.
 - Graph checksum and definition metadata included in every result.
 - Expert mode for externally authored JDM graphs that follow the Invespro contract.
+- Hosted Next.js demo for single, batch, default-definition, validation, and custom-definition flows.
 
 ## Packages
 
@@ -66,6 +70,39 @@ The package split is intentional:
 - Use `core` when embedding profiling directly in a Node service.
 - Use `hono` when exposing profiling over HTTP.
 - Use `cli` for local workflows, batch files, demos, and operational tooling.
+
+## Demo App
+
+The hosted demo is available at
+[https://invespro.vercel.app/](https://invespro.vercel.app/).
+
+It demonstrates:
+
+- Single-applicant evaluation against the default model.
+- Batch evaluation with ordered per-item results.
+- The active default definition, profiles, score bands, and allocations.
+- Definition validation against the public schema.
+- A custom model example where questions, answer options, weights, score bands,
+  and allocations are changed without writing a custom JDM graph.
+
+The demo lives in `apps/demo` and uses the workspace packages via
+`workspace:*`. In local development and on Vercel, the demo build must compile
+its workspace dependencies first so `@vibedcoder/invespro-types` and
+`@vibedcoder/invespro-core` have fresh `dist` outputs.
+
+Local demo commands:
+
+```bash
+pnpm demo:dev
+pnpm demo:build
+```
+
+The Vercel project uses `apps/demo` as the root directory with these commands:
+
+```bash
+corepack enable && corepack pnpm --version && corepack pnpm install --frozen-lockfile
+corepack pnpm --filter @invespro/demo... build
+```
 
 ## Installation
 
@@ -832,6 +869,8 @@ pnpm build
 Useful package commands:
 
 ```bash
+pnpm demo:dev
+pnpm demo:build
 pnpm --filter @vibedcoder/invespro-core test
 pnpm --filter @vibedcoder/invespro-hono test
 pnpm --filter @vibedcoder/invespro-cli exec tsx --tsconfig tsconfig.dev.json src/index.ts --help
@@ -845,6 +884,7 @@ The workspace uses:
 - Vitest for tests.
 - ESLint for linting.
 - Changesets for release management.
+- Next.js for the hosted demo app.
 
 ## Release Notes
 

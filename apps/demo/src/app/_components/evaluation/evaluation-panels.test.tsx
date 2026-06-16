@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type { RiskProfileDefinition } from "@vibedcoder/invespro-types";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BatchEvaluationPanel } from "./BatchEvaluationPanel";
+import { CustomDefinitionPanel } from "./CustomDefinitionPanel";
 import { DefinitionPanel } from "./DefinitionPanel";
 import { DefinitionValidatorPanel } from "./DefinitionValidatorPanel";
 import { SingleEvaluationPanel } from "./SingleEvaluationPanel";
@@ -48,6 +49,34 @@ const batchResult = {
     total: 1,
     fulfilled: 1,
     rejected: 0,
+  },
+};
+
+const customEvaluationResult = {
+  applicantId: "CUSTOM-001",
+  scores: {
+    downturnResponse: 10,
+    horizonYears: 10,
+    investmentGoal: 10,
+  },
+  rawScore: 30,
+  normalizedScore: 100,
+  profile: {
+    id: "growth",
+    label: "Growth",
+  },
+  overrideApplied: false,
+  allocation: {
+    equities: 80,
+    fixedIncome: 15,
+    cash: 5,
+  },
+  evaluatedAt: "2026-06-16T00:00:00.000Z",
+  definition: {
+    id: "demoCustomProfiler",
+    version: "0.1.0",
+    schemaVersion: "1.0",
+    graphChecksum: "sha256:custom",
   },
 };
 
@@ -150,6 +179,28 @@ describe("evaluation demo panels", () => {
       expect.objectContaining({ method: "POST" }),
     );
     expect(await screen.findByText("fulfilled")).toBeInTheDocument();
+  });
+
+  it("submits a custom definition and applicant answers", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(customEvaluationResult));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<CustomDefinitionPanel />);
+
+    expect(screen.getByDisplayValue(/demoCustomProfiler/)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/CUSTOM-001/)).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /evaluate custom model/i }),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/evaluate/custom",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(await screen.findByText("Growth")).toBeInTheDocument();
   });
 
   it("loads and displays the active definition", async () => {
