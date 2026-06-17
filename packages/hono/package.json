@@ -1,6 +1,6 @@
 {
   "name": "@vibedcoder/invespro-hono",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Hono REST adapter for investment profiling and portfolio allocation",
   "license": "MIT",
   "repository": {
