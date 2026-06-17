@@ -1,5 +1,13 @@
 # @vibedcoder/invespro-cli
 
+## 0.1.3
+
+### Patch Changes
+
+- Replace published workspace dependency ranges with npm-installable semver ranges.
+- Updated dependencies
+  - @vibedcoder/invespro-core@0.2.1
+
 ## 0.1.2
 
 ### Patch Changes

@@ -293,10 +293,10 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       '@vibedcoder/invespro-core':
-        specifier: workspace:*
+        specifier: ^0.2.1
         version: link:../core
       '@vibedcoder/invespro-types':
-        specifier: workspace:*
+        specifier: ^0.1.1
         version: link:../types
       citty:
         specifier: ^0.2.2
@@ -330,7 +330,7 @@ importers:
         specifier: ^0.54.0
         version: 0.54.0(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)
       '@vibedcoder/invespro-types':
-        specifier: workspace:*
+        specifier: ^0.1.1
         version: link:../types
       csv-parse:
         specifier: ^7.0.0
@@ -361,10 +361,10 @@ importers:
   packages/hono:
     dependencies:
       '@vibedcoder/invespro-core':
-        specifier: workspace:*
+        specifier: ^0.2.1
         version: link:../core
       '@vibedcoder/invespro-types':
-        specifier: workspace:*
+        specifier: ^0.1.1
         version: link:../types
       zod:
         specifier: ^4.4.3

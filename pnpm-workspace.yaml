@@ -3,6 +3,12 @@ packages:
   - "packages/*"
   - "tooling/*"
 
+autoInstallPeers: true
+strictPeerDependencies: true
+linkWorkspacePackages: true
+saveWorkspaceProtocol: rolling
+sharedWorkspaceLockfile: true
+
 allowBuilds:
   esbuild: true
   "@gorules/zen-engine": true

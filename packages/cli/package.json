@@ -1,6 +1,6 @@
 {
   "name": "@vibedcoder/invespro-cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI for investment profiling and portfolio allocation",
   "license": "MIT",
   "repository": {
@@ -43,8 +43,8 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.5.1",
-    "@vibedcoder/invespro-core": "workspace:*",
-    "@vibedcoder/invespro-types": "workspace:*",
+    "@vibedcoder/invespro-core": "^0.2.1",
+    "@vibedcoder/invespro-types": "^0.1.1",
     "citty": "^0.2.2",
     "csv-stringify": "^6.8.0"
   },
