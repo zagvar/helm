@@ -235,6 +235,44 @@ describe("evaluation demo panels", () => {
     expect(await screen.findByText("Growth")).toBeInTheDocument();
   });
 
+  it("renders structured validation details from custom evaluation failures", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(
+        {
+          error: {
+            code: "validation_error",
+            message: "Invalid custom evaluation payload.",
+            details: {
+              formErrors: [],
+              fieldErrors: {
+                answers: ["Required"],
+                horizonYears: ["Too small: expected number to be >=0"],
+              },
+            },
+          },
+        },
+        false,
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<CustomDefinitionPanel />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /evaluate custom model/i }),
+    );
+
+    expect(
+      await screen.findByText("Invalid custom evaluation payload."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("answers")).toBeInTheDocument();
+    expect(screen.getByText("Required")).toBeInTheDocument();
+    expect(screen.getByText("horizonYears")).toBeInTheDocument();
+    expect(
+      screen.getByText("Too small: expected number to be >=0"),
+    ).toBeInTheDocument();
+  });
+
   it("loads and displays the active definition", async () => {
     render(<DefinitionPanel definition={definition} />);
 
@@ -267,5 +305,44 @@ describe("evaluation demo panels", () => {
       expect.objectContaining({ method: "POST" }),
     );
     expect(await screen.findByText("Definition is valid.")).toBeInTheDocument();
+  });
+
+  it("renders structured definition validation details", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(
+        {
+          valid: false,
+          error: {
+            code: "validation_error",
+            message: "Invalid risk profile definition.",
+            details: {
+              formErrors: [],
+              fieldErrors: {
+                questions: ["Too small: expected array to have >=1 items"],
+                version: ["Expected a semantic version."],
+              },
+            },
+          },
+        },
+        false,
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<DefinitionValidatorPanel initialDefinition={definition} />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /validate definition/i }),
+    );
+
+    expect(
+      await screen.findByText("Invalid risk profile definition."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("questions")).toBeInTheDocument();
+    expect(
+      screen.getByText("Too small: expected array to have >=1 items"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("version")).toBeInTheDocument();
+    expect(screen.getByText("Expected a semantic version.")).toBeInTheDocument();
   });
 });

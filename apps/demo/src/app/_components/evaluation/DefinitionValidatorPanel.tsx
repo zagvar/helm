@@ -1,11 +1,17 @@
 import { useState } from "react";
 import type { RiskProfileDefinition } from "@vibedcoder/invespro-types";
+import { ErrorDetails } from "./ErrorDetails";
 import { Button } from "./fields";
+
+type ApiError = {
+  readonly message: string;
+  readonly details?: unknown;
+};
 
 type ValidationState =
   | { readonly status: "idle" }
   | { readonly status: "valid"; readonly message: string }
-  | { readonly status: "invalid"; readonly message: string };
+  | { readonly status: "invalid"; readonly error: ApiError };
 
 export function DefinitionValidatorPanel({
   initialDefinition,
@@ -38,9 +44,15 @@ export function DefinitionValidatorPanel({
       const data = await response.json();
 
       if (!response.ok || data.valid !== true) {
-        throw new Error(
-          data?.error?.message ?? "Definition validation failed.",
-        );
+        setValidation({
+          status: "invalid",
+          error: {
+            message:
+              data?.error?.message ?? "Definition validation failed.",
+            details: data?.error?.details,
+          },
+        });
+        return;
       }
 
       setValidation({
@@ -50,8 +62,10 @@ export function DefinitionValidatorPanel({
     } catch (err) {
       setValidation({
         status: "invalid",
-        message:
+        error: {
+          message:
           err instanceof Error ? err.message : "Definition validation failed.",
+        },
       });
     } finally {
       setIsSubmitting(false);
@@ -91,17 +105,16 @@ export function DefinitionValidatorPanel({
             loadingLabel="Validating..."
             type="submit"
           />
-          {validation.status !== "idle" && (
+          {validation.status === "valid" && (
             <p
-              className={
-                validation.status === "valid"
-                  ? "text-sm font-medium text-emerald-700"
-                  : "text-sm font-medium text-red-700"
-              }
+              className="text-sm font-medium text-emerald-700"
               role="status"
             >
               {validation.message}
             </p>
+          )}
+          {validation.status === "invalid" && (
+            <ErrorDetails error={validation.error} />
           )}
         </div>
       </form>

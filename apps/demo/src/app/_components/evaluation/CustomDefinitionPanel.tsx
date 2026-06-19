@@ -5,15 +5,21 @@ import {
   customEvaluationJson,
 } from "./demo-data";
 import { copyText } from "./copy";
+import { ErrorDetails } from "./ErrorDetails";
 import { Button } from "./fields";
 import { stringifyJson } from "./requests";
 import { ResultPanel } from "./ResultPanel";
+
+type ApiError = {
+  readonly message: string;
+  readonly details?: unknown;
+};
 
 export function CustomDefinitionPanel() {
   const [definitionJson, setDefinitionJson] = useState(customDefinitionJson);
   const [inputJson, setInputJson] = useState(customEvaluationJson);
   const [result, setResult] = useState<EvaluationResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,14 +43,20 @@ export function CustomDefinitionPanel() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.error?.message ?? "Custom evaluation failed.");
+        setError({
+          message: data?.error?.message ?? "Custom evaluation failed.",
+          details: data?.error?.details,
+        });
+        setResult(null);
+        return;
       }
 
       setResult(data);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Custom evaluation failed.",
-      );
+      setError({
+        message:
+          err instanceof Error ? err.message : "Custom evaluation failed.",
+      });
       setResult(null);
     } finally {
       setIsSubmitting(false);
@@ -146,11 +158,7 @@ export function CustomDefinitionPanel() {
               {copyStatus}
             </p>
           )}
-          {error && (
-            <p className="text-sm font-medium text-red-700" role="alert">
-              {error}
-            </p>
-          )}
+          {error && <ErrorDetails error={error} />}
         </div>
       </form>
 
