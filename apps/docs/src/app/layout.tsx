@@ -46,13 +46,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  icons: {
-    icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon.png", sizes: "192x192", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
-  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -60,20 +53,11 @@ export const metadata: Metadata = {
     siteName: "Helm",
     title: siteTitle,
     description: siteDescription,
-    images: [
-      {
-        url: "/zagvar-logo.jpg",
-        width: 1003,
-        height: 1003,
-        alt: "Zagvar logo",
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: siteTitle,
     description: siteDescription,
-    images: ["/zagvar-logo.jpg"],
   },
   robots: {
     index: true,

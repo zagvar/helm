@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { MarkGithubIcon } from "@primer/octicons-react";
 import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
@@ -15,13 +14,6 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6 sm:px-8 lg:px-10">
         <div className="flex min-w-0 items-center gap-3">
           <Link className="flex min-w-0 items-center gap-3" href="/">
-            <Image
-              alt="Zagvar logo"
-              className="size-8 rounded-md"
-              height={32}
-              src="/zagvar-logo.jpg"
-              width={32}
-            />
             <span className="truncate hidden sm:block text-sm font-semibold text-foreground">
               Helm
             </span>
