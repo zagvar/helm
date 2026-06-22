@@ -104,4 +104,4 @@ zagvar-helm evaluate input.json --definition definition.json --output json
 - `@zagvar/helm-types` provides schemas and types.
 - `@zagvar/helm-hono` exposes the engine through REST.
 
-Full documentation: [helm.vercel.app](https://helm.vercel.app/).
+Full documentation: [helmdoc.vercel.app](https://helmdoc.vercel.app/).

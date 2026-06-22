@@ -23,18 +23,18 @@ npm install @zagvar/helm-types
 import {
   RiskProfileEvaluationInputSchema,
   RiskProfileDefinitionSchema,
-} from '@zagvar/helm-types';
+} from "@zagvar/helm-types";
 
 const input = RiskProfileEvaluationInputSchema.parse({
-  applicantId: 'APP-001',
+  applicantId: "APP-001",
   answers: {
     investmentHorizonYears: 10,
-    riskAttitude: 'hold',
-    investmentObjective: 'balanced_growth',
+    riskAttitude: "hold",
+    investmentObjective: "balanced_growth",
     annualIncome: 75000,
     dtiRatio: 20,
     liquidityMonths: 4,
-    investmentExperience: 'intermediate',
+    investmentExperience: "intermediate",
   },
 });
 
@@ -55,4 +55,4 @@ const definition = RiskProfileDefinitionSchema.parse(customDefinition);
 - `@zagvar/helm-hono` exposes the engine through a Hono REST adapter.
 - `@zagvar/helm-cli` provides command-line evaluation and validation.
 
-Full documentation: [helm.vercel.app](https://helm.vercel.app/).
+Full documentation: [helmdoc.vercel.app](https://helmdoc.vercel.app/).

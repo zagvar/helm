@@ -17,7 +17,7 @@ const softwareApplicationJsonLd = {
   name: "Helm",
   applicationCategory: "FinanceApplication",
   operatingSystem: "Web",
-  url: "https://helm.vercel.app",
+  url: "https://helmdoc.vercel.app",
   codeRepository: "https://github.com/zagvar/helm",
   creator: {
     "@type": "Organization",
@@ -99,8 +99,7 @@ export default function Home() {
               <CardTitle>Workflow preview</CardTitle>
               <CardDescription>
                 An illustrative UI showing how teams can batch-evaluate
-                applicants and apply custom definitions with Helm
-                underneath.
+                applicants and apply custom definitions with Helm underneath.
               </CardDescription>
             </CardHeader>
             <CardContent>

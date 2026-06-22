@@ -15,7 +15,7 @@ const codeFont = JetBrains_Mono({
   variable: "--font-code",
 });
 
-const siteUrl = "https://helm.vercel.app";
+const siteUrl = "https://helmdoc.vercel.app";
 const siteTitle = "Helm - Investment Profiling and Portfolio Allocation";
 const siteDescription =
   "Try Helm, a rules-based investment profiling and portfolio allocation engine with default questionnaires, custom model definitions, JSON and CSV batch evaluation, and REST/CLI integrations.";

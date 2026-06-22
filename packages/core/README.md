@@ -20,21 +20,21 @@ npm install @zagvar/helm-core
 ## Quick Start
 
 ```ts
-import { RiskProfilerEngine } from '@zagvar/helm-core';
+import { RiskProfilerEngine } from "@zagvar/helm-core";
 
 const engine = new RiskProfilerEngine();
 
 try {
   const result = await engine.evaluate({
-    applicantId: 'APP-001',
+    applicantId: "APP-001",
     answers: {
       investmentHorizonYears: 10,
-      riskAttitude: 'hold',
-      investmentObjective: 'balanced_growth',
+      riskAttitude: "hold",
+      investmentObjective: "balanced_growth",
       annualIncome: 75000,
       dtiRatio: 20,
       liquidityMonths: 4,
-      investmentExperience: 'intermediate',
+      investmentExperience: "intermediate",
     },
   });
 
@@ -55,15 +55,15 @@ ZenEngine resources are released.
 const result = await engine.evaluateMany({
   items: [
     {
-      applicantId: 'APP-001',
+      applicantId: "APP-001",
       answers: {
         investmentHorizonYears: 10,
-        riskAttitude: 'hold',
-        investmentObjective: 'balanced_growth',
+        riskAttitude: "hold",
+        investmentObjective: "balanced_growth",
         annualIncome: 75000,
         dtiRatio: 20,
         liquidityMonths: 4,
-        investmentExperience: 'intermediate',
+        investmentExperience: "intermediate",
       },
     },
   ],
@@ -83,12 +83,12 @@ import {
   DEFAULT_RISK_PROFILE_DEFINITION,
   parseCsvBatch,
   RiskProfilerEngine,
-} from '@zagvar/helm-core';
+} from "@zagvar/helm-core";
 
 const csv = [
-  'applicantId,investmentHorizonYears,riskAttitude,investmentObjective,annualIncome,dtiRatio,liquidityMonths,investmentExperience',
-  'APP-001,10,hold,balanced_growth,75000,20,4,intermediate',
-].join('\n');
+  "applicantId,investmentHorizonYears,riskAttitude,investmentObjective,annualIncome,dtiRatio,liquidityMonths,investmentExperience",
+  "APP-001,10,hold,balanced_growth,75000,20,4,intermediate",
+].join("\n");
 
 const items = parseCsvBatch(csv, DEFAULT_RISK_PROFILE_DEFINITION);
 const engine = new RiskProfilerEngine();
@@ -102,7 +102,7 @@ empty cells.
 ## Custom Definitions
 
 ```ts
-import { RiskProfilerEngine } from '@zagvar/helm-core';
+import { RiskProfilerEngine } from "@zagvar/helm-core";
 
 const engine = new RiskProfilerEngine({ definition: customDefinition });
 ```
@@ -127,4 +127,4 @@ standard Helm result contract.
 - `@zagvar/helm-hono` exposes this engine through REST.
 - `@zagvar/helm-cli` evaluates inputs from the command line.
 
-Full documentation: [helm.vercel.app](https://helm.vercel.app/).
+Full documentation: [helmdoc.vercel.app](https://helmdoc.vercel.app/).
